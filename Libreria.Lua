@@ -2065,7 +2065,7 @@ function Library:CreateWindow(setup)
 	setup = setup or {};
 
 	setup.Title = setup.Title or "Window";
-	setup.Keybind = setup.Keybind or Enum.KeyCode.LeftControl;
+	setup.Keybind = setup.Keybind or Enum.KeyCode.Default;
 	setup.Size = setup.Size or Library.SizeLibrary.Default;
 	setup.KeySystem = setup.KeySystem or false;
 	setup.Logo = setup.Logo or "rbxassetid://7733920644";
@@ -2521,7 +2521,6 @@ function Library:CreateWindow(setup)
 		})
 	end)
 
-	-- Crear el contenedor de los controles de la ventana
 	WindowControl.Name = "WindowControl"
 	WindowControl.Parent = Headers
 	WindowControl.AnchorPoint = Vector2.new(1, 0.5)
@@ -2531,60 +2530,53 @@ function Library:CreateWindow(setup)
 	WindowControl.BorderSizePixel = 0
 	WindowControl.Position = UDim2.new(0.99000001, 0, 0.5, 0)
 	WindowControl.Size = UDim2.new(0.125, 0, 0.550000012, 0)
-	
-	-- Agregar layout para los botones
+
 	UIListLayout.Parent = WindowControl
 	UIListLayout.FillDirection = Enum.FillDirection.Horizontal
 	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Right
 	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	UIListLayout.VerticalAlignment = Enum.VerticalAlignment.Center
 	UIListLayout.Padding = UDim.new(0, 10)
-	
-	-- Crear los botones (aunque los vamos a eliminar más tarde)
+
 	MinimizeButton.Name = "MinimizeButton"
 	MinimizeButton.Parent = WindowControl
 	MinimizeButton.BackgroundColor3 = Color3.fromRGB(80, 255, 71)
 	MinimizeButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MinimizeButton.BorderSizePixel = 0
-	MinimizeButton.Size = UDim2.new(0, 0, 0, 0)
+	MinimizeButton.Size = UDim2.new(0,0,0,0)
 	MinimizeButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
-	MinimizeButton.ZIndex = 10
-	MinimizeButton.HoverImage = "rbxassetid://9886659276"
-	
+	MinimizeButton.ZIndex = 10;
+	MinimizeButton.HoverImage = "rbxassetid://9886659276";
+
 	UICorner.CornerRadius = UDim.new(1, 0)
 	UICorner.Parent = MinimizeButton
-	
+
 	UIStroke.Parent = MinimizeButton
-	
+
 	MaxisizweButton.Name = "MaxisizweButton"
 	MaxisizweButton.Parent = WindowControl
 	MaxisizweButton.BackgroundColor3 = Color3.fromRGB(255, 249, 85)
 	MaxisizweButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	MaxisizweButton.BorderSizePixel = 0
-	MaxisizweButton.Size = UDim2.new(0, 0, 0, 0)
+	MaxisizweButton.Size = UDim2.new(0,0,0,0)
 	MaxisizweButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
-	MaxisizweButton.HoverImage = 'rbxassetid://7733992901'
-	MaxisizweButton.ZIndex = 10
-	
+	MaxisizweButton.HoverImage = 'rbxassetid://7733992901';
+	MaxisizweButton.ZIndex = 10;
+
 	UICorner_2.CornerRadius = UDim.new(1, 0)
 	UICorner_2.Parent = MaxisizweButton
-	
+
 	UIStroke_2.Parent = MaxisizweButton
-	
+
 	CloseButton.Name = "CloseButton"
 	CloseButton.Parent = WindowControl
 	CloseButton.BackgroundColor3 = Color3.fromRGB(255, 88, 91)
 	CloseButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	CloseButton.BorderSizePixel = 0
-	CloseButton.Size = UDim2.new(0, 0, 0, 0)
+	CloseButton.Size = UDim2.new(0,0,0,0)
 	CloseButton.SizeConstraint = Enum.SizeConstraint.RelativeYY
-	CloseButton.ZIndex = 10
-	CloseButton.HoverImage = "rbxassetid://9886659671"
-	
-	-- Eliminar los botones para que no interfieran
-	MinimizeButton:Destroy()  -- Elimina el botón de minimizar
-	MaxisizweButton:Destroy()  -- Elimina el botón de maximizar
-	CloseButton:Destroy()  -- Elimina el botón de cerrar
+	CloseButton.ZIndex = 10;
+	CloseButton.HoverImage = "rbxassetid://9886659671";
 
 	task.delay(1,function()
 		Library:Tween(MinimizeButton , TweenInfo.new(0.5,Enum.EasingStyle.Quint),{
@@ -5737,7 +5729,6 @@ function Library:CreateWindow(setup)
 
 	return WindowLibrary;
 end;
-LeftControl
+
 return Library;
 
-WindowControl
