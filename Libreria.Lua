@@ -4461,49 +4461,6 @@ end;
 
         return table.concat(std, ' , ')
     end;
-
-    local Selected = {}; -- Guarda las opciones seleccionadas
-
-    local function UpdateSelection(value, Button)
-        if setup.Multi then
-            if Selected[value] then
-                -- Deseleccionar
-                Selected[value] = nil;
-                Button.Parent:WaitForChild('UIStroke').Color = Color3.fromRGB(156, 156, 156)
-                Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.TextColor
-            else
-                -- Verificar si el límite de 8 selecciones se alcanzó
-                if #Selected >= setup.MaxMulti then
-                    return;
-                end;
-
-                -- Seleccionar
-                Selected[value] = true;
-                Button.Parent:WaitForChild('UIStroke').Color = Library.Colors.Hightlight;
-                Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
-            end;
-        else
-            -- Modo de selección única
-            Selected = { [value] = true };
-        end
-
-        -- Actualizar el texto del dropdown
-        local selectedValues = {};
-        for k in pairs(Selected) do
-            table.insert(selectedValues, k);
-        end
-
-        Button.Parent:WaitForChild('TextLabel').Text = Fconcat(selectedValues);
-        setup.Callback(selectedValues);
-    end
-
-    for _, v in pairs(setup.Values) do
-        local Button = NewButton(tostring(v), false, setup.Multi and Selected[v] or v == setup.Default);
-
-        Button.MouseButton1Click:Connect(function()
-            UpdateSelection(v, Button);
-        end)
-    end
 end;
 
 
