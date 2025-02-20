@@ -2884,115 +2884,110 @@ function Library:CreateWindow(setup)
 		end;
 
 
-		function WindowLibrary:SetDropdownValues(Type,Table,Default,Callback)
-			if Type == 8 then -- Normal
-				local OldButton = nil;
+		function WindowLibrary:SetDropdownValues(Type, Table, Default, Callback)
+    if Type == 1 then -- Normal (Selección única)
+        local OldButton = nil;
 
-				for i,v in pairs(Table) do
-					local Button;
-					if typeof(v) ~= 'table' then
-						Button = NewButton(tostring(v),false,v == Default);
-					else
-						Button = NewButton(tostring(v),v.Icon,v == Default);
-					end;
+        for i, v in pairs(Table) do
+            local Button;
+            if typeof(v) ~= 'table' then
+                Button = NewButton(tostring(v), false, v == Default);
+            else
+                Button = NewButton(tostring(v), v.Icon, v == Default);
+            end;
 
-					Button.MouseButton1Click:Connect(function()
-						if OldButton then
-							if OldButton.Object ~= v then
-								OldButton.UIStroke.Color = Color3.fromRGB(156, 156, 156)	
-								OldButton.TextLabel.TextColor3 = Library.Colors.TextColor
-							end;
-						end;
+            Button.MouseButton1Click:Connect(function()
+                if OldButton then
+                    if OldButton.Object ~= v then
+                        OldButton.UIStroke.Color = Color3.fromRGB(156, 156, 156)	
+                        OldButton.TextLabel.TextColor3 = Library.Colors.TextColor
+                    end;
+                end;
 
-						OldButton = {
-							UIStroke = Button.Parent:WaitForChild('UIStroke'),
-							TextLabel = Button.Parent:WaitForChild('TextLabel'),
-							Object = v;
-						};
+                OldButton = {
+                    UIStroke = Button.Parent:WaitForChild('UIStroke'),
+                    TextLabel = Button.Parent:WaitForChild('TextLabel'),
+                    Object = v;
+                };
 
-						Button.Parent:WaitForChild('UIStroke').Color = Library.Colors.Hightlight;
-						Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
+                Button.Parent:WaitForChild('UIStroke').Color = Library.Colors.Hightlight;
+                Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
 
-						Callback(v);
-					end)
+                Callback(v);
+            end)
 
-					if v == Default then
-						OldButton = {
-							UIStroke = Button.Parent:WaitForChild('UIStroke'),
-							TextLabel = Button.Parent:WaitForChild('TextLabel'),
-							Object = v;
-						};
-					end
-				end;
-			else -- Multi
-				local MaxMulti = Default.Max;
-				local DefaultInfo = Default.Info;
-				local MultiData = {};
+            if v == Default then
+                OldButton = {
+                    UIStroke = Button.Parent:WaitForChild('UIStroke'),
+                    TextLabel = Button.Parent:WaitForChild('TextLabel'),
+                    Object = v;
+                };
+            end
+        end;
+    else -- Multi (Selección múltiple hasta 8 opciones)
+        local MaxMulti = 8 -- Ahora se pueden seleccionar hasta 8 opciones
+        local DefaultInfo = Default.Info;
+        local MultiData = {};
 
-				local Len = function()
-					local std = 0;
+        local Len = function()
+            local count = 0;
+            for _ in pairs(MultiData) do
+                count += 1;
+            end
+            return count;
+        end;
 
-					table['foreach'](MultiData,function()
-						std += 1;
-					end)
+        for i, v in pairs(Table) do
+            local Button;
 
-					return std;
-				end;
+            if typeof(v) ~= 'table' then
+                Button = NewButton(tostring(v), false, table.find(DefaultInfo, v));
+            else
+                Button = NewButton(tostring(v), v.Icon, table.find(DefaultInfo, v));
+            end;
 
-				for i,v in pairs(Table) do
-					local Button;
+            local UIStroke = Button.Parent:WaitForChild('UIStroke');
 
-					if typeof(v) ~= 'table' then
-						Button = NewButton(tostring(v),false,table.find(DefaultInfo,v));
-					else
-						Button = NewButton(tostring(v),v.Icon,table.find(DefaultInfo,v));
-					end;
+            Button.MouseButton1Click:Connect(function()
+                if MultiData[v] then
+                    -- Deseleccionar opción
+                    UIStroke.Color = Color3.fromRGB(156, 156, 156)
+                    Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.TextColor
+                    MultiData[v] = nil;
+                else
+                    -- Verificar si se alcanzó el límite de 8 selecciones
+                    if (Len() + 1) > MaxMulti then
+                        return;
+                    end;
 
-					local UIStroke = Button.Parent:WaitForChild('UIStroke');
+                    -- Seleccionar opción
+                    MultiData[v] = {
+                        Object = v,
+                        UIStroke = UIStroke,
+                    };
 
+                    Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
+                    UIStroke.Color = Library.Colors.Hightlight;
+                end;
 
-					Button.MouseButton1Click:Connect(function()
-						if MultiData[v] then
-							UIStroke.Color = Color3.fromRGB(156, 156, 156)
-							Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.TextColor
+                -- Construir la lista de opciones seleccionadas
+                local info = {};
+                for key in pairs(MultiData) do
+                    table.insert(info, key)
+                end
 
-							MultiData[v] = nil;
+                Callback(info);
+            end)
 
-
-						else
-							if (Len() + 1) > MaxMulti then
-								return;
-							end;
-
-							MultiData[v] = {
-								Object = v,
-								UIStroke = UIStroke,
-							};
-
-							Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
-							UIStroke.Color = Library.Colors.Hightlight;
-						end;
-
-						local info = {};
-
-						table.foreach(MultiData,function(a)
-							table.insert(info,a)
-						end)
-
-						Callback(info);
-					end)
-
-					if table.find(DefaultInfo,v) then
-
-						MultiData[v] = {
-							Object = v,
-							UIStroke = UIStroke,
-						}
-
-					end
-				end;
-			end;
-		end;
+            if table.find(DefaultInfo, v) then
+                MultiData[v] = {
+                    Object = v,
+                    UIStroke = UIStroke,
+                }
+            end
+        end;
+    end;
+end;
 
 		do
 			local Watermark = Instance.new("Frame")
