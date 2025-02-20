@@ -4436,35 +4436,76 @@ end;
 
 
 		function Root:AddDropdown(setup)
-			setup = setup or {};
-			setup.Title = setup.Title or "Dropdown";
-			setup.Values = setup.Values or {};
-			setup.Multi = setup.Multi or false;
-			setup.Default = setup.Default;
-			setup.MaxMulti = setup.MaxMulti or math.huge;
-			setup.Callback = setup.Callback or function() end;
+    setup = setup or {};
+    setup.Title = setup.Title or "Dropdown";
+    setup.Values = setup.Values or {};
+    setup.Multi = setup.Multi or false;
+    setup.Default = setup.Default or {};
+    setup.MaxMulti = setup.MaxMulti or 8; -- Límite de 8 selecciones
+    setup.Callback = setup.Callback or function() end;
 
-			local Fconcat = function(a)
-				if typeof(a) ~= 'table' then
-					return tostring(a);
-				end;
+    local Fconcat = function(a)
+        if typeof(a) ~= 'table' then
+            return tostring(a);
+        end;
 
-				local p,l = pcall(table.concat,a,' , ')
+        local p, l = pcall(table.concat, a, ' , ')
 
-				if p then return l; end;
+        if p then return l; end;
 
-				local std = {};
+        local std = {};
 
-				table.foreach(a,function(a,v)
-					if typeof(v) == 'boolean' then
-						table.insert(std,tostring(a));
-					else
-						table.insert(std,tostring(v));
-					end;
-				end)
+        table.foreach(a, function(a, v)
+            table.insert(std, tostring(v));
+        end)
 
-				return table.concat(std,' , ')
-			end;
+        return table.concat(std, ' , ')
+    end;
+
+    local Selected = {}; -- Guarda las opciones seleccionadas
+
+    local function UpdateSelection(value, Button)
+        if setup.Multi then
+            if Selected[value] then
+                -- Deseleccionar
+                Selected[value] = nil;
+                Button.Parent:WaitForChild('UIStroke').Color = Color3.fromRGB(156, 156, 156)
+                Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.TextColor
+            else
+                -- Verificar si el límite de 8 selecciones se alcanzó
+                if #Selected >= setup.MaxMulti then
+                    return;
+                end;
+
+                -- Seleccionar
+                Selected[value] = true;
+                Button.Parent:WaitForChild('UIStroke').Color = Library.Colors.Hightlight;
+                Button.Parent:WaitForChild('TextLabel').TextColor3 = Library.Colors.Hightlight
+            end;
+        else
+            -- Modo de selección única
+            Selected = { [value] = true };
+        end
+
+        -- Actualizar el texto del dropdown
+        local selectedValues = {};
+        for k in pairs(Selected) do
+            table.insert(selectedValues, k);
+        end
+
+        Button.Parent:WaitForChild('TextLabel').Text = Fconcat(selectedValues);
+        setup.Callback(selectedValues);
+    end
+
+    for _, v in pairs(setup.Values) do
+        local Button = NewButton(tostring(v), false, setup.Multi and Selected[v] or v == setup.Default);
+
+        Button.MouseButton1Click:Connect(function()
+            UpdateSelection(v, Button);
+        end)
+    end
+end;
+
 
 			local DropdownBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
