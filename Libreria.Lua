@@ -4436,33 +4436,35 @@ end;
 
 
 		function Root:AddDropdown(setup)
-    setup = setup or {};
-    setup.Title = setup.Title or "Dropdown";
-    setup.Values = setup.Values or {};
-    setup.Multi = setup.Multi or false;
-    setup.Default = setup.Default or {};
-    setup.MaxMulti = setup.MaxMulti or 8; -- Límite de 8 selecciones
-    setup.Callback = setup.Callback or function() end;
+			setup = setup or {};
+			setup.Title = setup.Title or "Dropdown";
+			setup.Values = setup.Values or {};
+			setup.Multi = setup.Multi or true;
+			setup.Default = setup.Default;
+			setup.MaxMulti = setup.MaxMulti or math.huge;
+			setup.Callback = setup.Callback or function() end;
 
-    local Fconcat = function(a)
-        if typeof(a) ~= 'table' then
-            return tostring(a);
-        end;
+			local Fconcat = function(a)
+				if typeof(a) ~= 'table' then
+					return tostring(a);
+				end;
 
-        local p, l = pcall(table.concat, a, ' , ')
+				local p,l = pcall(table.concat,a,' , ')
 
-        if p then return l; end;
+				if p then return l; end;
 
-        local std = {};
+				local std = {};
 
-        table.foreach(a, function(a, v)
-            table.insert(std, tostring(v));
-        end)
+				table.foreach(a,function(a,v)
+					if typeof(v) == 'boolean' then
+						table.insert(std,tostring(a));
+					else
+						table.insert(std,tostring(v));
+					end;
+				end)
 
-        return table.concat(std, ' , ')
-    end;
-end;
-
+				return table.concat(std,' , ')
+			end;
 
 			local DropdownBlock = Instance.new("Frame")
 			local DropShadow = Instance.new("ImageLabel")
