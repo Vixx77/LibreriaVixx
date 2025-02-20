@@ -2065,7 +2065,7 @@ function Library:CreateWindow(setup)
 	setup = setup or {};
 
 	setup.Title = setup.Title or "Window";
-	setup.Keybind = setup.Keybind or Enum.KeyCode.Default;
+	setup.Keybind = setup.Keybind or Enum.KeyCode.LeftControl;
 	setup.Size = setup.Size or Library.SizeLibrary.Default;
 	setup.KeySystem = setup.KeySystem or false;
 	setup.Logo = setup.Logo or "rbxassetid://7733920644";
@@ -2885,7 +2885,7 @@ function Library:CreateWindow(setup)
 
 
 		function WindowLibrary:SetDropdownValues(Type,Table,Default,Callback)
-			if Type == 1 then -- Normal
+			if Type == 8 then -- Normal
 				local OldButton = nil;
 
 				for i,v in pairs(Table) do
@@ -5731,4 +5731,3 @@ function Library:CreateWindow(setup)
 end;
 
 return Library;
-
