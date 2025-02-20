@@ -4606,12 +4606,12 @@ end;
 				WindowLibrary:ClearDropdown();
 
 				if setup.Multi then
-					WindowLibrary:SetDropdownValues(0,setup.Values,{
+					WindowLibrary:SetDropdownValues(8,setup.Values,{
 						Info = setup.Default,
 						Max = setup.MaxMulti;
 					},OnCallback)
 				else
-					WindowLibrary:SetDropdownValues(1,setup.Values,setup.Default,OnCallback)
+					WindowLibrary:SetDropdownValues(8,setup.Values,setup.Default,OnCallback)
 				end;
 
 				WindowLibrary:OpenDropdown(Block);
